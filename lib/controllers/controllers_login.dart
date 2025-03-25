@@ -4,7 +4,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart'; // Para Provider
 
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -90,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _signInWithGoogle() async {
     try {
       await _supabase.auth.signInWithOAuth(
-        Provider.google,
+        OAuthProvider.google,
         redirectTo: 'io.supabase.flutterquickstart://login-callback/',
       );
       
@@ -263,10 +262,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       SizedBox(height: 20),
-                      ElevatedButton.icon(
+                      ElevatedButton(
                         onPressed: _signInWithGoogle,
-                        icon: Image.asset('assets/descarga.jpeg', height: 24),
-                        label: Text('Iniciar sesión con Google'),
+                        child: Text('Iniciar sesión con Google'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.black,
