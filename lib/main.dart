@@ -20,7 +20,7 @@ Future<void> main() async {
   );
   
    // Inicializa Stripe
-  Stripe.publishableKey = 'tu_clave_publica_de_stripe';
+  Stripe.publishableKey = 'pk_test_51R6MlYPRejRsCiFdjPxPOxZumJG6tWrY15PCNxwBWY4Yh0jFtwovDY0MxNOI8xpPKB28BisHBHx53d2qXqcNZ68h00I0jBcXqS';
   await Stripe.instance.applySettings();
   runApp(MyApp());
 }
