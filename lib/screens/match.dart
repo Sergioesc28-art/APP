@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'mascotas.dart'; // Importa MascotasScreen
+import 'home_screen.dart'; // Importa HomeScreen
+import 'chat.dart'; // Importa ChatScreen
 
 class MatchScreen extends StatefulWidget {
   const MatchScreen({super.key});
@@ -176,7 +179,11 @@ class _MatchScreenState extends State<MatchScreen> with SingleTickerProviderStat
       appBar: AppBar(
         title: Text(
           'Matches',
-          style: TextStyle(color: Colors.brown[700]),
+          style: TextStyle(
+            fontSize: 24,
+            color: Colors.brown[700],
+            fontWeight: FontWeight.bold,
+          ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -212,11 +219,19 @@ class _MatchScreenState extends State<MatchScreen> with SingleTickerProviderStat
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
         onTap: (index) {
-          if (index != 3) {
-            Navigator.pushReplacementNamed(
-              context, 
-              index == 0 ? '/' : index == 1 ? '/mascotas' : '/chat'
-            );
+          switch (index) {
+            case 0:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+              break;
+            case 1:
+              // Ya estamos en MatchScreen
+              break;
+            case 2:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ChatScreen()));
+              break;
+            case 3:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MascotasScreen()));
+              break;
           }
         },
         items: const [
@@ -232,7 +247,6 @@ class _MatchScreenState extends State<MatchScreen> with SingleTickerProviderStat
             icon: Icon(Icons.chat),
             label: 'Chat',
           ),
-          
           BottomNavigationBarItem(
             icon: Icon(Icons.pets),
             label: 'Mascotas',

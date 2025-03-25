@@ -272,50 +272,56 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
+  child: ListView(
+    padding: EdgeInsets.zero,
+    children: [
+      DrawerHeader(
+        decoration: BoxDecoration(
+          color: Colors.brown[700],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.brown[700],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundImage: AssetImage('assets/Logo_dogzline.png'),
-                    backgroundColor: Colors.transparent,
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    _userName,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                  ),
-                  Text(
-                    _email,
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
+            CircleAvatar(
+              radius: 40,
+              backgroundImage: AssetImage('assets/Logo_dogzline.png'),
+              backgroundColor: Colors.transparent,
+            ),
+            SizedBox(height: 10),
+            Flexible(
+              child: Text(
+                _userName,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            ListTile(
-              leading: Icon(Icons.exit_to_app),
-              title: Text('Cerrar sesión'),
-              onTap: () {
-                Navigator.pop(context);
-                _showLogoutConfirmationDialog();
-              },
+            Flexible(
+              child: Text(
+                _email,
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 14,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
       ),
+      ListTile(
+        leading: Icon(Icons.exit_to_app),
+        title: Text('Cerrar sesión'),
+        onTap: () {
+          Navigator.pop(context);
+          _showLogoutConfirmationDialog();
+        },
+      ),
+    ],
+  ),
+),
       body: RefreshIndicator(
         onRefresh: () => _loadUserData(),
         child: SingleChildScrollView(

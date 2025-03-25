@@ -186,14 +186,18 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Chats',
-          style: TextStyle(color: Colors.brown[700]),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
+     appBar: AppBar(
+  title: Text(
+    'Chats',
+    style: TextStyle(
+      fontSize: 24,
+      color: Colors.brown[700],
+      fontWeight: FontWeight.bold, // Añade esta línea para hacer el texto más grueso
+    ),
+  ),
+  backgroundColor: Colors.white,
+  elevation: 0,
+),
       body: _isLoading
           ? Center(child: CircularProgressIndicator(color: Colors.brown[700]))
           : _buildConversacionesList(),
