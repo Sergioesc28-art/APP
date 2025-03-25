@@ -268,9 +268,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       SizedBox(height: 20),
-                      ElevatedButton(
+                      ElevatedButton.icon(
                         onPressed: _signInWithGoogle,
-                        child: Text('Iniciar sesión con Google'),
+                        icon: Image.asset('assets/descarga.jpeg', height: 24),
+                        label: Text('Iniciar sesión con Google'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.black,
