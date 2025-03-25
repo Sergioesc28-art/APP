@@ -1,43 +1,30 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PaymentController {
-  Future<void> createPaymentIntent() async {
-    try {
-      // URL de tu backend
-      final url = Uri.parse('http://localhost:3000/create-payment-intent');
+  Future<void> subscribeToPremium(String userId) async {
+    final url = Uri.parse('http://localhost:3000/create-checkout-session');
 
-      // Cuerpo de la solicitud
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'amount': 5000, // Monto en centavos (5000 = $50.00)
-          'currency': 'usd',
-        }),
-      );
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'userId': userId}),
+    );
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final checkoutUrl = data['url'];
 
-        // Obtén el clientSecret del backend
-        final clientSecret = data['clientSecret'];
-
-        // Confirma el pago con Stripe
-        await Stripe.instance.confirmPayment(
-          clientSecret,
-          PaymentMethodParams.card(
-            paymentMethodData: PaymentMethodData(),
-          ),
-        );
-
-        print('Pago exitoso');
+      // Abre la URL de Stripe Checkout
+      if (await canLaunch(checkoutUrl)) {
+        await launch(checkoutUrl);
       } else {
-        print('Error al crear el Payment Intent: ${response.body}');
+        throw 'No se pudo abrir la URL de Stripe Checkout';
       }
-    } catch (e) {
-      print('Error: $e');
+    } else {
+      print('Error al crear la sesión de pago: ${response.body}');
     }
   }
 }

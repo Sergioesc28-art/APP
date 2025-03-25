@@ -16,10 +16,10 @@ class Mascota {
   final int? edad;
   final String? raza;
   final String? sexo;
-  final List<String>? vacunas;  // Changed to List<String>?
+  final List<String>? vacunas; // Changed to List<String>?
   final String? caracteristicas;
   final String? certificado;
-  final dynamic fotos;  // Keep as dynamic to handle different formats
+  final dynamic fotos; // Keep as dynamic to handle different formats
   final String? comportamiento;
   final String? idUsuario;
 
@@ -42,7 +42,9 @@ class Mascota {
     List<String>? vacunasList;
     if (json['vacunas'] != null) {
       if (json['vacunas'] is List) {
-        vacunasList = List<String>.from(json['vacunas'].map((x) => x.toString()));
+        vacunasList = List<String>.from(
+          json['vacunas'].map((x) => x.toString()),
+        );
       } else if (json['vacunas'] is String) {
         // If it's a single string, make it a list with one item
         vacunasList = [json['vacunas']];
@@ -58,7 +60,7 @@ class Mascota {
       vacunas: vacunasList,
       caracteristicas: json['caracteristicas'],
       certificado: json['certificado'],
-      fotos: json['fotos'],  // Keep as dynamic
+      fotos: json['fotos'], // Keep as dynamic
       comportamiento: json['comportamiento'],
       idUsuario: json['id_usuario'],
     );
@@ -123,16 +125,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       print('Loading pets for user ID: $userId');
-      
+
       final response = await _supabase
           .from('mascotas')
           .select()
           .eq('id_usuario', userId);
-      
+
       print('Supabase response type: ${response.runtimeType}');
-      
+
       final List<Mascota> mascotas = [];
-      
+
       for (var item in response) {
         try {
           final mascota = Mascota.fromJson(item);
@@ -142,14 +144,14 @@ class _HomeScreenState extends State<HomeScreen> {
           print('Problematic record: $item');
         }
       }
-      
+
       setState(() {
         _mascotas = mascotas;
         _isLoading = false;
       });
-      
+
       print('Loaded ${mascotas.length} mascotas successfully');
-        } catch (e) {
+    } catch (e) {
       print('Error loading mascotas: $e');
       setState(() {
         _isLoading = false;
@@ -162,21 +164,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String? _extractImageData(dynamic fotos) {
     if (fotos == null) return null;
-    
+
     try {
       if (fotos is String && fotos.startsWith('[') && fotos.endsWith(']')) {
         List<dynamic> parsed = jsonDecode(fotos);
         return parsed.isNotEmpty ? parsed[0].toString() : null;
       }
-      
+
       if (fotos is List) {
         return fotos.isNotEmpty ? fotos[0].toString() : null;
       }
-      
+
       if (fotos is String) {
         return fotos;
       }
-      
+
       return fotos.toString();
     } catch (e) {
       print('Error extracting image data: $e');
@@ -185,7 +187,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _checkNotifications() async {
-
     setState(() {
       _unreadNotificationsCount = 3;
     });
@@ -247,11 +248,16 @@ class _HomeScreenState extends State<HomeScreen> {
           Stack(
             children: [
               IconButton(
-                icon: Icon(Icons.notifications, color: const Color.fromARGB(255, 93, 64, 55)),
+                icon: Icon(
+                  Icons.notifications,
+                  color: const Color.fromARGB(255, 93, 64, 55),
+                ),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => NotificationsPage()),
+                    MaterialPageRoute(
+                      builder: (context) => NotificationsPage(),
+                    ),
                   );
                 },
               ),
@@ -277,9 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.brown[700],
-              ),
+              decoration: BoxDecoration(color: Colors.brown[700]),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -291,17 +295,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(height: 10),
                   Text(
                     _userName,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
+                    style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                   Text(
                     _email,
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(color: Colors.white70, fontSize: 14),
                   ),
                 ],
               ),
@@ -337,10 +335,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Text(
                       _email,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                   ],
                 ),
@@ -417,7 +412,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: Colors.brown[700],
                             ),
                           ),
-
                         ],
                       ),
                     ),
@@ -425,158 +419,173 @@ class _HomeScreenState extends State<HomeScreen> {
                     _isLoading
                         ? Center(child: CircularProgressIndicator())
                         : _mascotas.isEmpty
-                            ? Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: Column(
-                                    children: [
-                                      Icon(
-                                        Icons.pets,
-                                        size: 60,
-                                        color: Colors.grey[400],
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        'No hay perros registrados',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey[600],
-                                        ),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(
-                                        'Registra a tu mascota para encontrar amistades o pareja',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      SizedBox(height: 20),
-                                      ElevatedButton.icon(
-                                        icon: Icon(Icons.add),
-                                        label: Text('Agregar mascota'),
-                                        style: ElevatedButton.styleFrom(
-                                          foregroundColor: Colors.white,
-                                          backgroundColor: Colors.brown[700],
-                                        ),
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => CreatePetScreen()),
-                                          ).then((_) => _loadUserData());
-                                        },
-                                      ),
-                                    ],
+                        ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.pets,
+                                  size: 60,
+                                  color: Colors.grey[400],
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  'No hay perros registrados',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey[600],
                                   ),
                                 ),
-                              )
-                            : Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20),
-                                child: GridView.builder(
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                    crossAxisSpacing: 10,
-                                    mainAxisSpacing: 10,
-                                    childAspectRatio: 3 / 4,
+                                SizedBox(height: 5),
+                                Text(
+                                  'Registra a tu mascota para encontrar amistades o pareja',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
                                   ),
-                                  itemCount: _mascotas.length,
-                                  itemBuilder: (context, index) {
-                                    final mascota = _mascotas[index];
-                                    // Extract the image correctly
-                                    final imageData = _extractImageData(mascota.fotos);
-                                    
-                                    Widget imageWidget;
-                                    if (imageData != null && imageData.contains('base64')) {
-                                      try {
-                                        // For base64 encoded images
-                                        final base64String = imageData.split(',').last;
-                                        imageWidget = Image.memory(
-                                          base64Decode(base64String),
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (context, error, stackTrace) {
-                                            print('Error loading image: $error');
-                                            return Icon(
-                                              Icons.pets,
-                                              size: 40,
-                                              color: Colors.grey[400],
-                                            );
-                                          },
-                                        );
-                                      } catch (e) {
-                                        print('Error decoding image: $e');
-                                        imageWidget = Icon(
-                                          Icons.pets,
-                                          size: 40,
-                                          color: Colors.grey[400],
-                                        );
-                                      }
-                                    } else if (imageData != null && (imageData.startsWith('http://') || imageData.startsWith('https://'))) {
-                                      // For URL images
-                                      imageWidget = Image.network(
-                                        imageData,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return Icon(
-                                            Icons.pets,
-                                            size: 40,
-                                            color: Colors.grey[400],
-                                          );
-                                        },
-                                      );
-                                    } else {
-                                      // Default icon when no image is available
-                                      imageWidget = Icon(
+                                ),
+                                SizedBox(height: 20),
+                                ElevatedButton.icon(
+                                  icon: Icon(Icons.add),
+                                  label: Text('Agregar mascota'),
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    backgroundColor: Colors.brown[700],
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CreatePetScreen(),
+                                      ),
+                                    ).then((_) => _loadUserData());
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                        : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: GridView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                  childAspectRatio: 3 / 4,
+                                ),
+                            itemCount: _mascotas.length,
+                            itemBuilder: (context, index) {
+                              final mascota = _mascotas[index];
+                              // Extract the image correctly
+                              final imageData = _extractImageData(
+                                mascota.fotos,
+                              );
+
+                              Widget imageWidget;
+                              if (imageData != null &&
+                                  imageData.contains('base64')) {
+                                try {
+                                  // For base64 encoded images
+                                  final base64String =
+                                      imageData.split(',').last;
+                                  imageWidget = Image.memory(
+                                    base64Decode(base64String),
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      print('Error loading image: $error');
+                                      return Icon(
                                         Icons.pets,
                                         size: 40,
                                         color: Colors.grey[400],
                                       );
-                                    }
-                                    
-                                    return GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => SwipeScreen(mascotaId: mascota.id!),
-                                          ),
-                                        );
-                                      },
-                                      child: Card(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(15),
-                                        ),
-                                        elevation: 5,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                                          children: [
-                                            Expanded(
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-                                                child: imageWidget,
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Text(
-                                                mascota.nombre ?? '',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.brown[700],
-                                                ),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                    },
+                                  );
+                                } catch (e) {
+                                  print('Error decoding image: $e');
+                                  imageWidget = Icon(
+                                    Icons.pets,
+                                    size: 40,
+                                    color: Colors.grey[400],
+                                  );
+                                }
+                              } else if (imageData != null &&
+                                  (imageData.startsWith('http://') ||
+                                      imageData.startsWith('https://'))) {
+                                // For URL images
+                                imageWidget = Image.network(
+                                  imageData,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Icon(
+                                      Icons.pets,
+                                      size: 40,
+                                      color: Colors.grey[400],
                                     );
                                   },
+                                );
+                              } else {
+                                // Default icon when no image is available
+                                imageWidget = Icon(
+                                  Icons.pets,
+                                  size: 40,
+                                  color: Colors.grey[400],
+                                );
+                              }
+
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => SwipeScreen(
+                                            mascotaId: mascota.id!,
+                                          ),
+                                    ),
+                                  );
+                                },
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  elevation: 5,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      Expanded(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(15),
+                                          ),
+                                          child: imageWidget,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          mascota.nombre ?? '',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.brown[700],
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
+                              );
+                            },
+                          ),
+                        ),
                   ],
                 ),
               ),
@@ -596,7 +605,7 @@ class _HomeScreenState extends State<HomeScreen> {
               // Ya estamos en HomeScreen
               break;
             case 1:
-               Navigator.pushReplacement(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => MatchScreen()),
               );
@@ -607,8 +616,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 MaterialPageRoute(builder: (context) => ChatScreen()),
               );
               break;
-            case 3: 
-             Navigator.pushReplacement(
+            case 3:
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => MascotasScreen()),
               );
@@ -616,41 +625,28 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         },
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Inicio',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Match',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'Chat',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.pets),
-            label: 'Mascotas',
-          ),
-          
-          
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Match'),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
+          BottomNavigationBarItem(icon: Icon(Icons.pets), label: 'Mascotas'),
         ],
       ),
-      floatingActionButton: _mascotas.isEmpty
-    ? null
-    : FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreatePetScreen()),
-          ).then((_) => _loadUserData());
-        },
-        backgroundColor: const Color.fromARGB(255, 93, 64, 55),
-        child: Icon(
-          Icons.add,
-          color: Colors.white, // Cambia el color del ícono aquí
-        ),
-      ),
+      floatingActionButton:
+          _mascotas.isEmpty
+              ? null
+              : FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CreatePetScreen()),
+                  ).then((_) => _loadUserData());
+                },
+                backgroundColor: const Color.fromARGB(255, 93, 64, 55),
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white, // Cambia el color del ícono aquí
+                ),
+              ),
     );
   }
 }
