@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'screens/mascotas.dart';
 import 'screens/chat.dart';
 import 'screens/match.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +19,9 @@ Future<void> main() async {
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0eGpvY3FwdG1naHBrdWRkcHdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzMzY2NjAsImV4cCI6MjA1NzkxMjY2MH0.gWEpbK7OkhfDDRjxkVfNI6ZYwjmGyCq34oapbqotB_8',
   );
   
+   // Inicializa Stripe
+  Stripe.publishableKey = 'tu_clave_publica_de_stripe';
+  await Stripe.instance.applySettings();
   runApp(MyApp());
 }
 
